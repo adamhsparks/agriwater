@@ -1,44 +1,33 @@
-#SINGLE VALUES OF AGROMETEOROLOGICAL DATA
-#SENTINEL-2
+#GRID OF AGROMETEOROLOGICAL DATA
+#MODIS
 
-#'
-#' Crop coefficient (ETa / ET0) using Sentinel-2 images with single agrometeorological data.
+#'Crop coefficient (ETa / ET0) using MODIS with a grid of agrometeorological data.
 #'
 #' @param doy   is the Day of Year (DOY)
-#' @param RG  is the global solar radiation
-#' @param Ta  is the average air temperature
 #' @param a  is one of the regression coefficients of SAFER algorithm
 #' @param b  is one of the regression coefficients of SAFER algorithm
 #'
 #' @returns It returns in raster format (.tif) the Surface Albedo at 24h scale ("Alb_24"), NDVI, Surface Temperature ("LST"), Crop Coefficient ("kc") and net radiation ("Rn_MJ").
 
-kc_s2 = function(doy, RG, Ta, a, b){
+kc_modis_grid = function(doy, a, b){
 
+  b1 <- raster("B1.tif")
   b2 <- raster("B2.tif")
-  b3 <- raster("B3.tif")
-  b4 <- raster("B4.tif")
-  b8 <- raster("B8.tif")
+  RG <- raster("RG.tif")
+  Ta <- raster("Ta.tif")
 
   mask <- readOGR("mask.shp")
 
-
+  b1_crop <- crop(b1, extent(mask))
+  b1_mascara <- mask(b1_crop, mask)
   b2_crop <- crop(b2, extent(mask))
   b2_mascara <- mask(b2_crop, mask)
-  b3_crop <- crop(b3, extent(mask))
-  b3_mascara <- mask(b3_crop, mask)
-  b4_crop <- crop(b4, extent(mask))
-  b4_mascara <- mask(b4_crop, mask)
-  b8_crop <- crop(b8, extent(mask))
-  b8_mascara <- mask(b8_crop, mask)
 
-  b2_mascara <- b2_mascara/10000
-  b3_mascara <- b3_mascara/10000
-  b4_mascara <- b4_mascara/10000
-  b8_mascara <- b8_mascara/10000
 
-  Alb_Top = b2_mascara*0.32+b3_mascara*0.26+b4_mascara*0.25+b8_mascara*0.17
+  Alb_inst=b1_mascara*0.41*0.0001+b2_mascara*0.14*0.0001+0.08
 
-  Alb_24 = 0.6054*Alb_Top + 0.0797
+  Alb_24=1.0223*Alb_inst+ 0.0149
+
 
   writeRaster(Alb_24, "Alb_24", format = "GTiff", overwrite=TRUE)
 
@@ -90,7 +79,7 @@ kc_s2 = function(doy, RG, Ta, a, b){
 
   LEeq = (slope*Rn)/(slope+0.066)
 
-  rm(b2, b3, b4, b8, b2_mascara, b3_mascara, b4_mascara, b8_mascara, mascara, slope, Rn_coeff, RsTOP, RsTOP_aux, R, Ws, E0, cos_zwn, W, Dec, LAT, Et, map1, lati, long)
+  rm(b1, b2, b1_mascara, b2_mascara, mask, slope, Rn_coeff, RsTOP, RsTOP_aux, R, Ws, E0, cos_zwn, W, Dec, LAT, Et, map1, lati, long)
 
   RR =Alb_24*RG
 
@@ -127,44 +116,32 @@ kc_s2 = function(doy, RG, Ta, a, b){
   writeRaster(kc, "kc", format = "GTiff", overwrite=TRUE)
 }
 
-#'
-#' Actual evapotranspiration (ETa) using Sentinel-2 images with single agrometeorological data.
+#' Actual evapotranspiration (ETa) using MODIS with a grid of agrometeorological data.
 #' @param doy  is the Day of Year (DOY)
-#' @param RG is the global solar radiation
-#' @param Ta is the average air temperature
-#' @param ET0 is the reference evapotranspiration
 #' @param a  is one of the regression coefficients of SAFER algorithm
 #' @param b is one of the regression coefficients of SAFER algorithm
 #'
 #' @returns It returns in raster format (.tif) the Surface Albedo at 24h scale ("Alb_24"), NDVI, Surface Temperature ("LST"), net radiation ("Rn_MJ"), Crop Coefficient ("kc") and Actual Evapotranspiration (evapo).
 
-evapo_s2 = function(doy, RG, Ta, ET0, a, b){
+evapo_modis_grid = function(doy, a, b){
 
+  b1 <- raster("B1.tif")
   b2 <- raster("B2.tif")
-  b3 <- raster("B3.tif")
-  b4 <- raster("B4.tif")
-  b8 <- raster("B8.tif")
+  RG <- raster("RG.tif")
+  Ta <- raster("Ta.tif")
+  ET0 <- raster("ET0.tif")
 
   mask <- readOGR("mask.shp")
 
-
+  b1_crop <- crop(b1, extent(mask))
+  b1_mascara <- mask(b1_crop, mask)
   b2_crop <- crop(b2, extent(mask))
   b2_mascara <- mask(b2_crop, mask)
-  b3_crop <- crop(b3, extent(mask))
-  b3_mascara <- mask(b3_crop, mask)
-  b4_crop <- crop(b4, extent(mask))
-  b4_mascara <- mask(b4_crop, mask)
-  b8_crop <- crop(b8, extent(mask))
-  b8_mascara <- mask(b8_crop, mask)
 
-  b2_mascara <- b2_mascara/10000
-  b3_mascara <- b3_mascara/10000
-  b4_mascara <- b4_mascara/10000
-  b8_mascara <- b8_mascara/10000
 
-  Alb_Top = b2_mascara*0.32+b3_mascara*0.26+b4_mascara*0.25+b8_mascara*0.17
+  Alb_inst=b1_mascara*0.41*0.0001+b2_mascara*0.14*0.0001+0.08
 
-  Alb_24 = 0.6054*Alb_Top + 0.0797
+  Alb_24=1.0223*Alb_inst+ 0.0149
 
   writeRaster(Alb_24, "Alb_24", format = "GTiff", overwrite=TRUE)
 
@@ -217,7 +194,7 @@ evapo_s2 = function(doy, RG, Ta, ET0, a, b){
 
   LEeq = (slope*Rn)/(slope+0.066)
 
-  rm(b2, b3, b4, b8, b2_mascara, b3_mascara, b4_mascara, b8_mascara, mascara, slope, Rn_coeff, RsTOP, RsTOP_aux, R, Ws, E0, cos_zwn, W, Dec, LAT, Et, map1, lati, long)
+  rm(b1, b2, b1_mascara, b2_mascara, mask, slope, Rn_coeff, RsTOP, RsTOP_aux, R, Ws, E0, cos_zwn, W, Dec, LAT, Et, map1, lati, long)
 
   RR =Alb_24*RG
 
@@ -258,44 +235,34 @@ evapo_s2 = function(doy, RG, Ta, ET0, a, b){
   writeRaster(ET, "evapo", format = "GTiff", overwrite=TRUE)
 }
 
-#'Energy balance using Sentinel-2 images with single agrometeorological data.
+#'Energy balance using Landsat-8 images with a grid of agrometeorological data.
 #'@param doy is the Day of Year (DOY)
-#'@param RG is the global solar radiation
-#'@param Ta is the average air temperature
-#'@param ET0  is the reference evapotranspiration
 #'@param a is one of the regression coefficients of SAFER algorithm
 #'@param b is one of the regression coefficients of SAFER algorithm
 #'
 #'@returns It returns in raster format (.tif) the Surface Albedo at 24h scale ("Alb_24"), NDVI, Surface Temperature ("LST"), Crop Coefficient ("kc"), Actual Evapotranspiration (evapo), latent heat flux "LE_MJ"), net radiation ("Rn_MJ"), ground heat flux ("G_MJ") and the sensible heat flux ("H_MJ").
 
-radiation_s2 =  function(doy, RG, Ta, ET0, a, b){
+
+radiation_modis_grid =  function(doy, a, b){
 
 
+  b1 <- raster("B1.tif")
   b2 <- raster("B2.tif")
-  b3 <- raster("B3.tif")
-  b4 <- raster("B4.tif")
-  b8 <- raster("B8.tif")
+  RG <- raster("RG.tif")
+  Ta <- raster("Ta.tif")
+  ET0 <- raster("ET0.tif")
 
   mask <- readOGR("mask.shp")
 
-
+  b1_crop <- crop(b1, extent(mask))
+  b1_mascara <- mask(b1_crop, mask)
   b2_crop <- crop(b2, extent(mask))
   b2_mascara <- mask(b2_crop, mask)
-  b3_crop <- crop(b3, extent(mask))
-  b3_mascara <- mask(b3_crop, mask)
-  b4_crop <- crop(b4, extent(mask))
-  b4_mascara <- mask(b4_crop, mask)
-  b8_crop <- crop(b8, extent(mask))
-  b8_mascara <- mask(b8_crop, mask)
 
-  b2_mascara <- b2_mascara/10000
-  b3_mascara <- b3_mascara/10000
-  b4_mascara <- b4_mascara/10000
-  b8_mascara <- b8_mascara/10000
 
-  Alb_Top = b2_mascara*0.32+b3_mascara*0.26+b4_mascara*0.25+b8_mascara*0.17
+  Alb_inst=b1_mascara*0.41*0.0001+b2_mascara*0.14*0.0001+0.08
 
-  Alb_24 = 0.6054*Alb_Top + 0.0797
+  Alb_24=1.0223*Alb_inst+ 0.0149
 
   writeRaster(Alb_24, "Alb_24", format = "GTiff", overwrite=TRUE)
 
@@ -348,7 +315,7 @@ radiation_s2 =  function(doy, RG, Ta, ET0, a, b){
 
   LEeq = (slope*Rn)/(slope+0.066)
 
-  rm(b2, b3, b4, b8, b2_mascara, b3_mascara, b4_mascara, b8_mascara, mascara, slope, Rn_coeff, RsTOP, RsTOP_aux, R, Ws, E0, cos_zwn, W, Dec, LAT, Et, map1, lati, long)
+  rm(b1, b2, b1_mascara, b2_mascara, mask, slope, Rn_coeff, RsTOP, RsTOP_aux, R, Ws, E0, cos_zwn, W, Dec, LAT, Et, map1, lati, long)
 
   RR =Alb_24*RG
 
@@ -398,40 +365,4 @@ radiation_s2 =  function(doy, RG, Ta, ET0, a, b){
 
   writeRaster(H_MJ, "H_MJ", format = "GTiff", overwrite=TRUE)
 
-}
-
-#' Surface Albedo using Sentinel-2 images.
-#'
-#' @return It returns in raster format (.tif) the Surface Albedo at 24h scale ("Alb_24").
-
-albedo_s2 = function()
-{
-
-  b2 <- raster("B2.tif")
-  b3 <- raster("B3.tif")
-  b4 <- raster("B4.tif")
-  b8 <- raster("B8.tif")
-
-  mask <- readOGR("mask.shp")
-
-
-  b2_crop <- crop(b2, extent(mask))
-  b2_mascara <- mask(b2_crop, mask)
-  b3_crop <- crop(b3, extent(mask))
-  b3_mascara <- mask(b3_crop, mask)
-  b4_crop <- crop(b4, extent(mask))
-  b4_mascara <- mask(b4_crop, mask)
-  b8_crop <- crop(b8, extent(mask))
-  b8_mascara <- mask(b8_crop, mask)
-
-  b2_mascara <- b2_mascara/10000
-  b3_mascara <- b3_mascara/10000
-  b4_mascara <- b4_mascara/10000
-  b8_mascara <- b8_mascara/10000
-
-  Alb_Top = b2_mascara*0.32+b3_mascara*0.26+b4_mascara*0.25+b8_mascara*0.17
-
-  Alb_24 = 0.6054*Alb_Top + 0.0797
-
-  writeRaster(Alb_24, "Alb_24", format = "GTiff", overwrite=TRUE)
 }

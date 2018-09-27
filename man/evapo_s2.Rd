@@ -15,9 +15,9 @@ evapo_s2(doy, RG, Ta, ET0, a, b)
 
 \item{ET0}{is the reference evapotranspiration}
 
-\item{a}{is one of the regression coefficients of SAFER algortihm}
+\item{a}{is one of the regression coefficients of SAFER algorithm}
 
-\item{b}{is one of the regression coefficients of SAFER algortihm}
+\item{b}{is one of the regression coefficients of SAFER algorithm}
 }
 \description{
 Actual evapotranspiration (ETa) using Sentinel-2 images with single agrometeorological data.
