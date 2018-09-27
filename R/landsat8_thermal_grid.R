@@ -42,6 +42,8 @@ kc_l8t_grid = function(doy, a, b){
   b10_mascara <- mask(b10_crop, mask)
   b11_crop <- crop(b11, extent(mask))
   b11_mascara <- mask(b11_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
 
   metadata <- list.files(pattern = "txt")
   m <- read.csv(metadata, header = T)
@@ -228,6 +230,10 @@ evapo_l8t_grid = function(doy, a, b){
   b10_mascara <- mask(b10_crop, mask)
   b11_crop <- crop(b11, extent(mask))
   b11_mascara <- mask(b11_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  ET0_crop <- crop(ET0, extent(mask))
+  ET0 <- mask(ET0_crop, mask)
 
   metadata <- list.files(pattern = "txt")
   m <- read.csv(metadata, header = T)
@@ -420,6 +426,10 @@ radiation_l8t_grid =  function(dj, a, b){
   b10_mascara <- mask(b10_crop, mask)
   b11_crop <- crop(b11, extent(mask))
   b11_mascara <- mask(b11_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  ET0_crop <- crop(ET0, extent(mask))
+  ET0 <- mask(ET0_crop, mask)
 
   metadata <- list.files(pattern = "txt")
   m <- read.csv(metadata, header = T)

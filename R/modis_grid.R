@@ -22,6 +22,10 @@ kc_modis_grid = function(doy, a, b){
   b1_mascara <- mask(b1_crop, mask)
   b2_crop <- crop(b2, extent(mask))
   b2_mascara <- mask(b2_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  Ta_crop <- crop(Ta, extent(mask))
+  Ta <- mask(Ta_crop, mask)
 
 
   Alb_inst=b1_mascara*0.41*0.0001+b2_mascara*0.14*0.0001+0.08
@@ -63,7 +67,7 @@ kc_modis_grid = function(doy, a, b){
 
   RsTOP_aux =(1367/pi)*E0*R
 
-  RsTOP = resample(RsTOP_aux, b7_mascara, method="bilinear")
+  RsTOP = resample(RsTOP_aux, b1_mascara, method="bilinear")
 
   Transm =(RG*11.6)/RsTOP
 
@@ -137,6 +141,12 @@ evapo_modis_grid = function(doy, a, b){
   b1_mascara <- mask(b1_crop, mask)
   b2_crop <- crop(b2, extent(mask))
   b2_mascara <- mask(b2_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  Ta_crop <- crop(Ta, extent(mask))
+  Ta <- mask(Ta_crop, mask)
+  ET0_crop <- crop(ET0, extent(mask))
+  ET0 <- mask(ET0_crop, mask)
 
 
   Alb_inst=b1_mascara*0.41*0.0001+b2_mascara*0.14*0.0001+0.08
@@ -178,7 +188,7 @@ evapo_modis_grid = function(doy, a, b){
 
   RsTOP_aux =(1367/pi)*E0*R
 
-  RsTOP = resample(RsTOP_aux, b7_mascara, method="bilinear")
+  RsTOP = resample(RsTOP_aux, b1_mascara, method="bilinear")
 
   Transm =(RG*11.6)/RsTOP
 
@@ -258,6 +268,12 @@ radiation_modis_grid =  function(doy, a, b){
   b1_mascara <- mask(b1_crop, mask)
   b2_crop <- crop(b2, extent(mask))
   b2_mascara <- mask(b2_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  Ta_crop <- crop(Ta, extent(mask))
+  Ta <- mask(Ta_crop, mask)
+  ET0_crop <- crop(ET0, extent(mask))
+  ET0 <- mask(ET0_crop, mask)
 
 
   Alb_inst=b1_mascara*0.41*0.0001+b2_mascara*0.14*0.0001+0.08
@@ -299,7 +315,7 @@ radiation_modis_grid =  function(doy, a, b){
 
   RsTOP_aux =(1367/pi)*E0*R
 
-  RsTOP = resample(RsTOP_aux, b7_mascara, method="bilinear")
+  RsTOP = resample(RsTOP_aux, b1_mascara, method="bilinear")
 
   Transm =(RG*11.6)/RsTOP
 

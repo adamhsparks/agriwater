@@ -30,6 +30,10 @@ kc_s2_grid = function(doy, a, b){
   b4_mascara <- mask(b4_crop, mask)
   b8_crop <- crop(b8, extent(mask))
   b8_mascara <- mask(b8_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  Ta_crop <- crop(Ta, extent(mask))
+  Ta <- mask(Ta_crop, mask)
 
   b2_mascara <- b2_mascara/10000
   b3_mascara <- b3_mascara/10000
@@ -156,6 +160,12 @@ evapo_s2_grid = function(doy, a, b){
   b4_mascara <- mask(b4_crop, mask)
   b8_crop <- crop(b8, extent(mask))
   b8_mascara <- mask(b8_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  Ta_crop <- crop(Ta, extent(mask))
+  Ta <- mask(Ta_crop, mask)
+  ET0_crop <- crop(ET0, extent(mask))
+  ET0 <- mask(ET0_crop, mask)
 
   b2_mascara <- b2_mascara/10000
   b3_mascara <- b3_mascara/10000
@@ -287,6 +297,12 @@ radiation_s2_grid =  function(doy, a, b){
   b4_mascara <- mask(b4_crop, mask)
   b8_crop <- crop(b8, extent(mask))
   b8_mascara <- mask(b8_crop, mask)
+  RG_crop <- crop(RG, extent(mask))
+  RG <- mask(RG_crop, mask)
+  Ta_crop <- crop(Ta, extent(mask))
+  Ta <- mask(Ta_crop, mask)
+  ET0_crop <- crop(ET0, extent(mask))
+  ET0 <- mask(ET0_crop, mask)
 
   b2_mascara <- b2_mascara/10000
   b3_mascara <- b3_mascara/10000
